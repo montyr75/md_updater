@@ -1,0 +1,82 @@
+<style>
+  paper-button, paper-icon-button {
+    text-transform: none;
+    cursor: default !important;
+  }
+
+  paper-input[type="file"] {
+    width: 80%;
+  }
+
+  textarea {
+    padding: 10px;
+  }
+
+  paper-material {
+    margin: 10px 5px;
+    padding: 5px;
+  }
+
+  .iron-selected {
+    background: #eee;
+  }
+</style>
+
+<paper-header-panel class="flex">
+  <paper-toolbar>
+    <h2 class="app-title flex-auto">Markdown Updater</h2>
+    <span class="flex"></span>
+    <div class="flex-auto" class="layout horizontal" style="text-align: right;">
+      <div>
+        <paper-icon-button icon="file-upload" (click)="importDialog.open()"></paper-icon-button>
+        <paper-tooltip position="left">Import Markdown</paper-tooltip>
+      </div>
+    </div>
+  </paper-toolbar>
+
+  <div class="fit layout horizontal content">
+    <paper-material elevation="1" class="flex layout vertical">
+      <header class="layout horizontal justified">
+        <h3>Links</h3>
+        <paper-icon-button icon="refresh" (click)="getLinks()" [disabled]="md == null"></paper-icon-button>
+      </header>
+
+      <section class="table flex" style="overflow-y: auto;">
+        <table class="table">
+          <thead>
+          <th>Text</th>
+          <th>URL</th>
+          <th>Go</th>
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let link of links; let i = index">
+            <td>{{link['text']}}</td>
+            <td><a href="{{link['url']}}">{{link['url']}}</a></td>
+            <td><paper-icon-button icon="editor:highlight" (click)="goToLink(i)"></paper-icon-button></td>
+          </tr>
+          </tbody>
+        </table>
+      </section>
+    </paper-material>
+
+    <paper-material elevation="1" class="flex layout vertical">
+      <header class="layout horizontal center">
+        <h3>File: </h3>
+        <span style="margin-left: 10px;">{{filename}}</span>
+      </header>
+      <textarea #md_ta [(ngModel)]="md" class="flex" style="overflow-y: auto;" spellcheck="false"></textarea>
+    </paper-material>
+  </div>
+</paper-header-panel>
+
+<paper-dialog #importDialog modal (iron-overlay-closed)="importMarkdownFile($event, importFileInput.files)">
+  <h2>Import Markdown File</h2>
+  <div>
+    <input #importFileInput type="file" accept=".md">
+  </div>
+  <div class="buttons">
+    <paper-button dialog-dismiss>Cancel</paper-button>
+    <paper-button dialog-confirm>Accept</paper-button>
+  </div>
+</paper-dialog>
